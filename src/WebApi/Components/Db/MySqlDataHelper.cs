@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using MySql.Data.MySqlClient;
 
 namespace WebApi.Components.Db
@@ -7,9 +8,9 @@ namespace WebApi.Components.Db
     {
         
 
-        private MySqlConnection CreateConnection(string connectionStr)
+        private DbConnection CreateConnection(string connectionStr)
         {
-            MySqlConnection connnection = new MySqlConnection(connectionStr);
+            var connnection = new MySqlConnection(connectionStr);
             connnection.Open();
 
             return connnection;
