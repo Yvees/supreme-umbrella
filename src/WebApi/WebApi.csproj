@@ -13,4 +13,7 @@
     <PackageReference Include="SystemCommonLibrary" Version="0.2.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Extension\" />
+  </ItemGroup>
 </Project>

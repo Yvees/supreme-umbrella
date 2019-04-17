@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using WebApi.Components.Extension;
 using WebApi.Models;
 
 namespace WebApi.Controllers
@@ -12,18 +13,11 @@ namespace WebApi.Controllers
     [ApiController]
     public class GameHelperController : ControllerBase
     {
-        private readonly HelperConfig _helperConfig;
-
-        public GameHelperController(IOptions<HelperConfig> settings)
-        {
-            _helperConfig = settings.Value;
-        }
-
         // GET api/values
         [HttpGet]
         public ContentResult New()
         {
-
+            var c = HelperConfigExtension.GetConfig();
             return new ContentResult();
         }
 
