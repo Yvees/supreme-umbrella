@@ -5,13 +5,14 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SystemCommonLibrary.Json;
+using WebApi.Models;
 
 namespace WebApi.Components.WxApi
 {
     public static class WxBase
     {
         public static string BaseUrl = "https://api.weixin.qq.com/";
-        private static string _tokenUrl = "cgi-bin/token?grant_type=client_credential&appid=wx31b5b47955b57ce1&secret=595469d8b13028e589dedf9eb32bc9bf";
+        private static string _tokenUrl = $"cgi-bin/token?grant_type=client_credential&appid={HelperConfig.Current.WxAppid}&secret={HelperConfig.Current.WxSecret}";
 
         private static string _accessToken = string.Empty;
         private static DateTime _expireTime = DateTime.Now.AddHours(-2);

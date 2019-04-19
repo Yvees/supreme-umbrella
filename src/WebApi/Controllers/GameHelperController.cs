@@ -17,7 +17,6 @@ namespace WebApi.Controllers
         [HttpGet]
         public ContentResult New()
         {
-            var c = HelperConfigExtension.GetConfig();
             return new ContentResult();
         }
 
