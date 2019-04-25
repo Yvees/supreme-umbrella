@@ -9,7 +9,7 @@ namespace WebApi.Models
     {
         public string MagcoreApiMatch { get; set; }
         public string MagcoreApiTrain { get; set; }
-        public string IntegralDb { get; set; }
+        public string InternalDb { get; set; }
         public string WxAppid { get; set; }
         public string WxSecret { get; set; }
 

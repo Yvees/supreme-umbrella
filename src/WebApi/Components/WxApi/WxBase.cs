@@ -16,6 +16,7 @@ namespace WebApi.Components.WxApi
         public static string BaseUrl = "https://api.weixin.qq.com/";
         private static string _tokenUrl = $"cgi-bin/token?grant_type=client_credential&appid={HelperConfig.Current.WxAppid}&secret={HelperConfig.Current.WxSecret}";
         private static string _token = "talkischeap";
+        private static string _infoUrl = "cgi-bin/user/info?access_token={0}&openid={1}";
 
         private static string _accessToken = string.Empty;
         private static DateTime _expireTime = DateTime.Now.AddHours(-2);
@@ -70,5 +71,34 @@ namespace WebApi.Components.WxApi
 
             return sign.ToString().ToLower() == signature.ToLower();
         }
+
+        public static async Task<WxUserInfo> GetUserInfo(string openId)
+        {
+            try
+            {
+                var client = new HttpClient() { BaseAddress = new Uri(BaseUrl) };
+                var response = await client.GetAsync(string.Format(_infoUrl, await GetAccessToken(), openId));
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(result);
+                    dynamic json = DynamicJson.Parse(result);
+                    var info = new WxUserInfo();
+                    info.openid = json.openid;
+                    info.sex = json.sex;
+                    info.nickname = json.nickname;
+                    info.headimgurl = json.headimgurl;
+
+                    return info;
+                }
+                else
+                    throw new Exception("微信服务器错误");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }
