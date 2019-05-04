@@ -38,6 +38,17 @@ namespace WebApi.Models
         /// </summary>
         public long MsgId { get; set; }
 
+        public WxTextMsg() { }
+        public WxTextMsg(string to, string from, long time, string content)
+        {
+            ToUserName = to;
+            FromUserName = from;
+            MsgType = "text";
+            CreateTime = time;
+            Content = content;
+            MsgId = 0;
+        }
+
         public static WxTextMsg FromXml(string xml)
         {
             if (string.IsNullOrEmpty(xml))
@@ -58,5 +69,21 @@ namespace WebApi.Models
 
             return ins;
         }
+
+        public string ToXml()
+        {
+            return string.Format(xmlTpl, ToUserName, FromUserName,
+                CreateTime, MsgType);
+        }
+
+        private string xmlTpl = @"
+            <xml>
+              <ToUserName>{0}</ToUserName>
+              <FromUserName>{1}</FromUserName>
+              <CreateTime>{2}</CreateTime>
+              <MsgType>{3}</MsgType>
+              <Content>{4}</Content>
+            </xml>
+        ";
     }
 }

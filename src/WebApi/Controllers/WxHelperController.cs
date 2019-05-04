@@ -64,18 +64,26 @@ namespace WebApi.Controllers
 
                     //
                     var article = new WxArticle("MagCore - 磁芯大战", "进入房间创建游戏",
-                        "https://pic2.zhimg.com/50/v2-36dfc53b61eda72a96d7165198a3fdc6_400x224.jpg",
-                        "https://www.zhihu.com/question/48903769/answer/656886137");
-                    var reply = new WxReplyMsg(msg.FromUserName, msg.ToUserName, msg.CreateTime,
-                        "news", new WxArticle[] { article });
+                        HelperConfig.Current.WxInterfaceHost + "assets/images/icon.png",
+                        HelperConfig.Current.WxInterfaceHost + "pages/creator.html"
+                            + "?t=" + DateTime.Now.Ticks.ToString()
+                            + "&oid=" + openId + "&name=" + info.nickname );
+                    var reply = new WxArticleMsg(msg.FromUserName, msg.ToUserName, 
+                        msg.CreateTime, new WxArticle[] { article });
                     string text = reply.ToXml();
                     Console.WriteLine($"回复：{text}");
-
+                    
                     return new ContentResult() { StatusCode = 200, Content = text };
                 }
-            }
+                else
+                {
+                    //
+                    var defaultReply = new WxTextMsg(msg.FromUserName, msg.ToUserName, msg.CreateTime,
+                               "未正确识别，磁芯大战比赛期间，其他回复暂时停止服务");
 
-            return new ContentResult();
+                    return new ContentResult() { StatusCode = 200, Content = defaultReply.ToXml() };
+                }
+            }
         }        
     }
 }

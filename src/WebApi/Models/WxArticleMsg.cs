@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models
 {
-    public class WxReplyMsg
+    public class WxArticleMsg
     {
         /// <summary>
         /// 接收方帐号（收到的OpenID）
@@ -23,7 +23,7 @@ namespace WebApi.Models
         public long CreateTime { get; set; }
 
         /// <summary>
-        /// 消息类型，图文为news
+        /// 消息类型，图文为news,文本为text
         /// </summary>
         public string MsgType { get; set; }
 
@@ -37,12 +37,12 @@ namespace WebApi.Models
         /// </summary>
         public List<WxArticle> Articles { get; set; }
 
-        public WxReplyMsg(string to, string from, long time, string type, WxArticle[] items)
+        public WxArticleMsg(string to, string from, long time, WxArticle[] items)
         {
             ToUserName = to;
             FromUserName = from;
             CreateTime = time;
-            MsgType = type;
+            MsgType = "news";
             Articles = new List<WxArticle>(items);
         }
 
