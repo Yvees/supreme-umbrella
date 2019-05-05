@@ -73,7 +73,7 @@ namespace WebApi.Models
         public string ToXml()
         {
             return string.Format(xmlTpl, ToUserName, FromUserName,
-                CreateTime, MsgType);
+                CreateTime, MsgType, Content);
         }
 
         private string xmlTpl = @"

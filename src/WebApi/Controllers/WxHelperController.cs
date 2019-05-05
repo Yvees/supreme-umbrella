@@ -43,7 +43,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [ActionName("Responser")]
-        public async Task<ContentResult> Post()
+        public async Task<ContentResult> Post(string signature, string timestamp, string nonce, string echostr)
         {
             using (Stream stream = Request.Body)
             {
