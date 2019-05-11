@@ -43,7 +43,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [ActionName("Responser")]
-        public async Task<ContentResult> Post(string signature, string timestamp, string nonce, string echostr)
+        public async Task<ContentResult> Post(string signature, string timestamp, string nonce, string openid)
         {
             using (Stream stream = Request.Body)
             {
@@ -56,9 +56,8 @@ namespace WebApi.Controllers
                 if (msg.MsgType.Contains("text")
                     && msg.Content.Contains("磁芯大战"))
                 {
-                    string openId = msg.FromUserName;
                     //
-                    var info = await WxBase.GetUserInfo(openId);
+                    var info = await WxBase.GetUserInfo(openid);
                     Console.WriteLine($"获取：{info.nickname} 信息");
 
 
@@ -67,7 +66,7 @@ namespace WebApi.Controllers
                         HelperConfig.Current.WxInterfaceHost + "assets/images/icon.png",
                         HelperConfig.Current.WxInterfaceHost + "pages/creator.html"
                             + "?t=" + DateTime.Now.Ticks.ToString()
-                            + "&oid=" + openId + "&name=" + info.nickname );
+                            + "&oid=" + openid + "&name=" + info.nickname );
                     var reply = new WxArticleMsg(msg.FromUserName, msg.ToUserName, 
                         msg.CreateTime, new WxArticle[] { article });
                     string text = reply.ToXml();

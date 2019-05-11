@@ -14,7 +14,7 @@ namespace WebApi.Components.WxApi
     public static class WxBase
     {
         public static string BaseUrl = "https://api.weixin.qq.com/";
-        private static string _tokenUrl = $"cgi-bin/token?grant_type=client_credential&appid={HelperConfig.Current.WxAppid}&secret={HelperConfig.Current.WxSecret}";
+        private static string _tokenUrl = "cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}";
         private static string _token = "talkischeap";
         private static string _infoUrl = "cgi-bin/user/info?access_token={0}&openid={1}";
 
@@ -28,14 +28,15 @@ namespace WebApi.Components.WxApi
                 try
                 {
                     var client = new HttpClient() { BaseAddress = new Uri(BaseUrl) };
-                    var response = await client.GetAsync(_tokenUrl);
+                    var response = await client.GetAsync(string.Format(_tokenUrl, HelperConfig.Current.WxAppid, HelperConfig.Current.WxSecret));
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         var result = await response.Content.ReadAsStringAsync();
                         Console.WriteLine(result);
-                        dynamic json = DynamicJson.Parse(result);
-                        _accessToken = json.access_token;
-                        _expireTime = DateTime.Now.AddSeconds(json.expires_in);
+                        var json = DynamicJson.Parse(result);
+                        var access = json.Deserialize<WxAccessToken>();
+                        _accessToken = access.access_token;
+                        _expireTime = DateTime.Now.AddSeconds(access.expires_in);
 
                         return _accessToken;
                     }
@@ -81,13 +82,14 @@ namespace WebApi.Components.WxApi
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var result = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(result);
-                    dynamic json = DynamicJson.Parse(result);
-                    var info = new WxUserInfo();
-                    info.openid = json.openid;
-                    info.sex = json.sex;
-                    info.nickname = json.nickname;
-                    info.headimgurl = json.headimgurl;
+                    Console.WriteLine("GetUserInfo success:" + result);
+                    var json = DynamicJson.Parse(result);
+                    
+                    var info = json.Deserialize<WxUserInfo>();
+                    //info.openid = json.openid;
+                    //info.sex = json.sex;
+                    //info.nickname = json.nickname;
+                    //info.headimgurl = json.headimgurl;
 
                     return info;
                 }

@@ -44,6 +44,8 @@ namespace WebApi
                 app.UseHsts();
             }
 
+            Console.WriteLine($"Start App by {env.EnvironmentName} environment.");
+
             app.UseHttpsRedirection();
             app.UseMvc();
         }
