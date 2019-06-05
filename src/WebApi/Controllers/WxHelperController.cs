@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Components.Manager;
 using WebApi.Components.WxApi;
 using WebApi.Models;
 
@@ -45,6 +46,8 @@ namespace WebApi.Controllers
         [ActionName("Responser")]
         public async Task<ContentResult> Post(string signature, string timestamp, string nonce, string openid)
         {
+            await WxBase.InitMenu();
+
             using (Stream stream = Request.Body)
             {
                 byte[] buffer = new byte[Request.ContentLength.Value];
@@ -59,14 +62,17 @@ namespace WebApi.Controllers
                     //
                     var info = await WxBase.GetUserInfo(openid);
                     Console.WriteLine($"获取：{info.nickname} 信息");
-
+                    var user = WxUser.CreateFromWxUserInfo(info);
+                    await DbEntityManager.Insert<WxUser>(user);
 
                     //
                     var article = new WxArticle("MagCore - 磁芯大战", "进入房间创建游戏",
                         HelperConfig.Current.WxInterfaceHost + "assets/images/icon.png",
                         HelperConfig.Current.WxInterfaceHost + "pages/creator.html"
                             + "?t=" + DateTime.Now.Ticks.ToString()
-                            + "&oid=" + openid + "&name=" + info.nickname );
+                            + "&oid=" + openid 
+                            + "&name=" + info.nickname 
+                            + "&s=" + user.salt);
                     var reply = new WxArticleMsg(msg.FromUserName, msg.ToUserName, 
                         msg.CreateTime, new WxArticle[] { article });
                     string text = reply.ToXml();

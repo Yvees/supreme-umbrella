@@ -13,6 +13,8 @@ namespace WebApi.Models
         public string WxAppid { get; set; }
         public string WxSecret { get; set; }
         public string WxInterfaceHost { get; set; }
+
+        public string WxMenu { get; set; }
         public static HelperConfig Current { get;set;}
     }
 }

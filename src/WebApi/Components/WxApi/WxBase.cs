@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using SystemCommonLibrary.Json;
+using WebApi.Components.Manager;
 using WebApi.Models;
 
 namespace WebApi.Components.WxApi
@@ -17,6 +18,7 @@ namespace WebApi.Components.WxApi
         private static string _tokenUrl = "cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}";
         private static string _token = "talkischeap";
         private static string _infoUrl = "cgi-bin/user/info?access_token={0}&openid={1}";
+        private static string _menuUrl = "cgi-bin/menu/create?access_token={0}";
 
         private static string _accessToken = string.Empty;
         private static DateTime _expireTime = DateTime.Now.AddHours(-2);
@@ -102,5 +104,29 @@ namespace WebApi.Components.WxApi
             }
         }
 
+        public static async Task<bool> InitMenu()
+        {
+            if (GlobalVarsManager.IsWxMenuInited)
+            {
+                return true;
+            }
+            try
+            {
+                var client = new HttpClient() { BaseAddress = new Uri(BaseUrl) };
+                var response = await client.PostAsync(string.Format(_menuUrl, await GetAccessToken()), 
+                                                        new StringContent(HelperConfig.Current.WxMenu));
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    GlobalVarsManager.IsWxMenuInited = true;
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

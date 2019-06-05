@@ -1,17 +1,23 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using WebApi.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Components.Db
 {
-    public class MySqlDataHelper 
+    public static class MySqlDataHelper 
     {
-        
-
-        private DbConnection CreateConnection(string connectionStr)
+        private static DbConnection CreateConnection(string connectionStr = null)
         {
+            if (string.IsNullOrEmpty(connectionStr))
+            {
+                connectionStr = HelperConfig.Current.InternalDb;
+            }
+
             var connnection = new MySqlConnection(connectionStr);
-            connnection.Open();
 
             return connnection;
         }
