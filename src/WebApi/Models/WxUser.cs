@@ -18,6 +18,12 @@ namespace WebApi.Models
 
         public string salt { get; set; }
 
+        public void ResetSalt()
+        {
+            var rnd = new Random(DateTime.Now.Millisecond).NextDouble();
+            this.salt = rnd.ToString().Substring(2, 8);
+        }
+
         public static WxUser CreateFromWxUserInfo(WxUserInfo info)
         {
             var user = new WxUser();

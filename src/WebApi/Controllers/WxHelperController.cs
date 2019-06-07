@@ -59,11 +59,21 @@ namespace WebApi.Controllers
                 if (msg.MsgType.Contains("text")
                     && msg.Content.Contains("磁芯大战"))
                 {
-                    //
-                    var info = await WxBase.GetUserInfo(openid);
-                    Console.WriteLine($"获取：{info.nickname} 信息");
-                    var user = WxUser.CreateFromWxUserInfo(info);
-                    await DbEntityManager.Insert<WxUser>(user);
+                    if (await DbEntityManager.Exist<WxUser>("openid", openid))
+                    {
+                        //get user from db
+                        var user = await DbEntityManager.SelectOne<WxUser>("openid", openid);
+                        //update salt only
+                        await DbEntityManager.Update<WxUser>(user, nameof(user.openid), user.openid);
+                    }
+                    else
+                    {
+                        //
+                        var info = await WxBase.GetUserInfo(openid);
+                        Console.WriteLine($"获取：{info.nickname} 信息");
+                        var user = WxUser.CreateFromWxUserInfo(info);
+                        await DbEntityManager.Insert<WxUser>(user);
+                    }
 
                     //
                     var article = new WxArticle("MagCore - 磁芯大战", "进入房间创建游戏",
