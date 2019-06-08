@@ -33,13 +33,20 @@ namespace WebApi.Components.Manager
 
             return await MySqlHelper.ExecuteScalarAsync(HelperConfig.Current.InternalDb, sql);
         }
+        public static async Task<object> Update<T>(T entity)
+        {
+            string sql = GenUpdateSql<T>(entity);
+
+            return await MySqlHelper.ExecuteScalarAsync(HelperConfig.Current.InternalDb, sql);
+        }
 
         public static async Task<T> SelectOne<T>(string key, object keyVal)
         {
             string sql = GenSelectSql<T>(key, keyVal);
             using (var connection = new MySqlConnection(HelperConfig.Current.InternalDb))
             {
-                return connection.Query<T>(sql).SingleOrDefault();
+                var result = await connection.QueryAsync<T>(sql);
+                return result.SingleOrDefault();
             }
         }
 
@@ -94,9 +101,43 @@ namespace WebApi.Components.Manager
             var columns = typeof(T).GetProperties();
             foreach (var column in columns)
             {
-                if (column.Name != key)
+                bool isKey = column.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0;
+
+                if (column.Name != key && !isKey)
                 {
                     dicColVal.Add(column.Name, FormatValue(column.GetValue(entity)));
+                }
+            }
+
+            string strUpdate = string.Empty;
+            foreach (var col in dicColVal.Keys)
+            {
+                strUpdate += $"{col}={dicColVal[col]},";
+            }
+
+            string sql = $"update {typeof(T).Name} set {strUpdate.Substring(0, strUpdate.Length - 1)} where {key} = {FormatValue(keyVal)}";
+            Console.WriteLine(sql);
+            return sql;
+        }
+
+        private static string GenUpdateSql<T>(T entity)
+        {
+            Dictionary<string, string> dicColVal = new Dictionary<string, string>();
+            string key = string.Empty;
+            object keyVal = null;
+            var columns = typeof(T).GetProperties();
+            foreach (var column in columns)
+            {
+                bool isKey = column.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0;
+
+                if (!isKey)
+                {
+                    dicColVal.Add(column.Name, FormatValue(column.GetValue(entity)));
+                }
+                else
+                {
+                    key = column.Name;
+                    keyVal = column.GetValue(entity);
                 }
             }
 
@@ -114,9 +155,9 @@ namespace WebApi.Components.Manager
         private static string FormatValue(object val)
         {
             if (val is string)
-                return $"{val}";
-            else if (val is int || val is long || val is float || val is double || val is decimal)
                 return $"\"{val}\"";
+            else if (val is int || val is long || val is float || val is double || val is decimal)
+                return $"{val}";
             else
                 throw new NotSupportedException("Value Type Not Supported.");
         }
