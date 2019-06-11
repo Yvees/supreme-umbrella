@@ -46,6 +46,15 @@ namespace WebApi.Controllers
         [ActionName("Responser")]
         public async Task<ContentResult> Post(string signature, string timestamp, string nonce, string openid)
         {
+            //验证微信签名
+            if (!WxBase.CheckSignature(signature, timestamp, nonce))
+            {
+                Console.WriteLine($"receive error check signature:{signature} with {timestamp},{nonce}");
+
+                return new ContentResult() { StatusCode = 401 };
+            }
+
+            //初始化菜单
             await WxBase.InitMenu();
 
             using (Stream stream = Request.Body)
