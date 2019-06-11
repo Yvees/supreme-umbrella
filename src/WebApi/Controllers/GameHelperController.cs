@@ -14,17 +14,16 @@ namespace WebApi.Controllers
     [ApiController]
     public class GameHelperController : ControllerBase
     {
-        // GET api/values
-        [HttpGet]
-        public ContentResult New()
+        [HttpPost]
+        public ContentResult New(string oid, string s, int color, string map)
         {
             
 
             return new ContentResult();
         }
 
-        [HttpPut]
-        public async Task<bool> ModifyIntegral()
+        [HttpGet]
+        public async Task<bool> Finish()
         {
             return true;
         }

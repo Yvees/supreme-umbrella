@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -26,7 +26,7 @@
   <div class="creator-page">
     <div class="">
       <p class="creator-desc">
-          本助手将自动加入一场战局。输入期望出征的玩家名，并点击加入战局，将自动带你进入一场战斗。
+          本助手将自动加入一场战局。点击加入战局，将带你进入一场战斗。
         </p>
         <p class="creator-desc">
             将页面所显示PlayerId和GameId应用于你自己的程序。
@@ -41,7 +41,7 @@
       <div class="weui-cell">
         <div class="weui-cell__hd"><label for="" class="weui-label">玩家</label></div>
         <div class="weui-cell__bd">
-          <input class="weui-input" type="text" placeholder="输入出战玩家名">
+          <input id="name" class="weui-input" type="text" placeholder="输入出战玩家名" disabled >
         </div>
       </div>
       <div class="weui-cell weui-cell_select weui-cell_select-after">
@@ -49,7 +49,7 @@
           <label for="" class="weui-label">图标</label>
         </div>
         <div class="weui-cell__bd">
-          <select class="weui-select" name="color">
+          <select class="weui-select" name="color" id="color">
             <option value="0">香蕉</option>
             <option value="1">樱桃</option>
             <option value="2">葡萄</option>
@@ -70,7 +70,7 @@
           <label for="" class="weui-label">地图</label>
         </div>
         <div class="weui-cell__bd">
-          <select class="weui-select" name="color">
+          <select class="weui-select" name="map" id="map">
             <option value="RectPhone">手机</option>
           </select>
         </div>
@@ -78,7 +78,7 @@
     </div>
 
     <div class="creator-button creator-gap">
-        <a href="javascript:;" class="weui-btn weui-btn_primary">加入战局</a>
+        <a href="javascript:OnSubmit();" class="weui-btn weui-btn_primary">加入战局</a>
       </div>
   </div>
 
