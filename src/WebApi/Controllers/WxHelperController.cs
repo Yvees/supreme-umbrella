@@ -75,7 +75,7 @@ namespace WebApi.Controllers
                         user = await DbEntityManager.SelectOne<WxUser>("openid", openid);
                         //update salt only
                         user.ResetSalt();
-                        await DbEntityManager.Update<WxUser>(user);
+                        await DbEntityManager.Update(user);
                     }
                     else
                     {
@@ -83,7 +83,7 @@ namespace WebApi.Controllers
                         var info = await WxBase.GetUserInfo(openid);
                         Console.WriteLine($"获取：{info.nickname} 信息");
                         user = WxUser.CreateFromWxUserInfo(info);
-                        await DbEntityManager.Insert<WxUser>(user);
+                        await DbEntityManager.Insert(user);
 
                     }
 

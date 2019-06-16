@@ -13,10 +13,10 @@ namespace WebApi.Components.Manager
 {
     public static class DbEntityManager
     {
-        public static async Task<object> Insert<T>(T entity)
+        public static async Task<int> Insert<T>(T entity)
         {
-            string sql = GenInsertSql<T>(entity);
-            return await MySqlHelper.ExecuteScalarAsync(HelperConfig.Current.InternalDb, sql);
+            string sql = GenInsertSql(entity);
+            return await MySqlHelper.ExecuteNonQueryAsync(HelperConfig.Current.InternalDb, sql);
         }
 
         public static async Task<bool> Exist<T>(string key, object keyVal)
@@ -27,17 +27,18 @@ namespace WebApi.Components.Manager
             return result.ToString() != "0";
         }
 
-        public static async Task<object> Update<T>(T entity, string key, object keyVal)
+        public static async Task<int> Update<T>(T entity, string key, object keyVal)
         {
-            string sql = GenUpdateSql<T>(entity, key, keyVal);
+            string sql = GenUpdateSql(entity, key, keyVal);
 
-            return await MySqlHelper.ExecuteScalarAsync(HelperConfig.Current.InternalDb, sql);
+            return await MySqlHelper.ExecuteNonQueryAsync(HelperConfig.Current.InternalDb, sql);
         }
-        public static async Task<object> Update<T>(T entity)
-        {
-            string sql = GenUpdateSql<T>(entity);
 
-            return await MySqlHelper.ExecuteScalarAsync(HelperConfig.Current.InternalDb, sql);
+        public static async Task<int> Update<T>(T entity)
+        {
+            string sql = GenUpdateSql(entity);
+
+            return await MySqlHelper.ExecuteNonQueryAsync(HelperConfig.Current.InternalDb, sql);
         }
 
         public static async Task<T> SelectOne<T>(string key, object keyVal)
@@ -50,6 +51,7 @@ namespace WebApi.Components.Manager
             }
         }
 
+        #region Private Methods
         private static string GenSelectSql<T>(string key, object keyVal)
         {
             string sql = $"select * from {typeof(T).Name} where {key}={FormatValue(keyVal)}";
@@ -183,5 +185,7 @@ namespace WebApi.Components.Manager
 
             return result;
         }
+
+        #endregion
     }
 }
