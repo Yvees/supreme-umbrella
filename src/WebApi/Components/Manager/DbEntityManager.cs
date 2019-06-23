@@ -51,6 +51,15 @@ namespace WebApi.Components.Manager
             }
         }
 
+        public static async Task<IEnumerable<T>> Select<T>(string key, object keyVal)
+        {
+            string sql = GenSelectSql<T>(key, keyVal);
+            using (var connection = new MySqlConnection(HelperConfig.Current.InternalDb))
+            {
+                return await connection.QueryAsync<T>(sql);
+            }
+        }
+
         #region Private Methods
         private static string GenSelectSql<T>(string key, object keyVal)
         {

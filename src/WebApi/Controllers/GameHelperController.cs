@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
+using MagCore.Sdk.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SystemCommonLibrary.Json;
@@ -56,7 +58,7 @@ namespace WebApi.Controllers
 
                     //join or creat a game
                     string gid = await GameManager.JoinOneGame(
-                        userIntegral.mc_integral < HelperConfig.Current.IntegralToJoin,
+                        userIntegral.mc_integral >= HelperConfig.Current.IntegralToJoin,
                         map, name, color, openid);
 
                     return new ContentResult() { StatusCode = 200, Content = gid };
@@ -64,10 +66,46 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<bool> Finish()
+        [HttpPost]
+        public async Task<ContentResult> Finish([FromBody]dynamic json)
         {
-            return true;
+            Game game = DynamicJson.Parse(json).Deserialize<Game>();
+            using (var trans = new TransactionScope())
+            {
+                var scores = await DbEntityManager.Select<GameScore>("gid", game.Id);
+                
+                foreach (var player in game.Players)
+                {
+                    var score = scores.SingleOrDefault(s => s.pidx == player.Index);
+                    if (score != null)
+                    {
+                        //integral 
+                        var oid = score.oid;
+                        var integral = await DbEntityManager.SelectOne<UserIntegral>("wx_openid", oid);
+
+                        if (player.State == 1)
+                        {
+                            score.score = 1;
+                            integral.mc_integral += 10;
+                            integral.total_integral += 10;
+                        }
+                        else
+                        {
+                            score.score = -1;
+                            integral.mc_integral += 1;
+                            integral.total_integral += 1;
+                        }
+
+                        //update GameScore & integral
+                        await DbEntityManager.Update<GameScore>(score);
+                        await DbEntityManager.Update<UserIntegral>(integral);
+                    }
+                }
+
+                trans.Complete();
+            }
+
+            return new ContentResult() { StatusCode = 200};
         }
     }
 }

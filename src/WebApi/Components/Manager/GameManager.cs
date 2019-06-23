@@ -12,11 +12,11 @@ namespace WebApi.Components.Manager
 {
     public static class GameManager
     {
-        public static async Task<string> JoinOneGame(bool isTrain, string map, string name, int color, string openid)
+        public static async Task<string> JoinOneGame(bool isMatch, string map, string name, int color, string openid)
         {
             var host = string.Empty;
-            if (isTrain)
-                host = HelperConfig.Current.MagcoreApiTrain;
+            if (isMatch)
+                host = HelperConfig.Current.MagcoreApiServer;
             else
                 host = HelperConfig.Current.MagcoreApiTrain;
 
@@ -27,7 +27,7 @@ namespace WebApi.Components.Manager
             if (gameList == null || gameList.Length == 0)
             {
                 //no games exist
-                return await JoinNewGame(map, name, color, openid);
+                return await JoinNewGame(isMatch, map, name, color, openid);
             }
             else
             {
@@ -47,7 +47,9 @@ namespace WebApi.Components.Manager
                                 {
                                     oid = openid,
                                     pid = player.Id,
-                                    gid = game.Id
+                                    gid = game.Id,
+                                    pidx = player.Index,
+                                    match = isMatch
                                 };
 
                                 await DbEntityManager.Insert(score);
@@ -59,20 +61,24 @@ namespace WebApi.Components.Manager
                 }
 
                 //found no game match
-                return await JoinNewGame(map, name, color, openid);
+                return await JoinNewGame(isMatch, map, name, color, openid);
             }
         }
 
-        private static async Task<string> JoinNewGame(string map, string name, int color, string openid)
+        private static async Task<string> JoinNewGame(bool isMatch, string map, string name, int color, string openid)
         {
             var player = PlayerHelper.CreatePlayer(name, color);
-            var gameid = GameHelper.CreateGame(map);
+            var args = new Dictionary<string, object>();
+            args.Add("Feedback", HelperConfig.Current.WxInterfaceHost + "api/GameHelper/Finish");
+            var gameid = GameHelper.CreateGame(map, args);
             GameHelper.JoinGame(gameid, player.Id);
 
             var score = new GameScore() {
                 oid = openid,
                 pid = player.Id,
-                gid = gameid
+                gid = gameid,
+                pidx = player.Index,
+                match = isMatch
             };
 
             await DbEntityManager.Insert(score);

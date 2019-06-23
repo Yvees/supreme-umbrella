@@ -19,6 +19,8 @@ namespace WebApi.Models
 
         public int score { get; set; }
 
-        public int time { get; set; }
+        public int pidx { get; set; }
+
+        public bool match { get; set; }
     }
 }
