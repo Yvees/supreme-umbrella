@@ -12,7 +12,9 @@ var databus = {
 
     server: 'api',
 
-    icons: new Array()
+    icons: new Array(),
+
+    selfIndex: undefined
 };
 
 databus.mapApi = databus.apiUrl + 'api/map/';

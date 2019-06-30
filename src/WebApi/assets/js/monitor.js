@@ -20,6 +20,8 @@ $(function() {
     //
     loadGame(queries.gid);
 
+    //
+    databus.selfIndex = queries.idx;
 });
 
 var OnError = function(rr) {
@@ -170,6 +172,23 @@ var update = function(game){
         }
 
         $('#descState').html(state);
+
+        if (game.State >= 2 && databus.selfIndex != undefined) {
+            let parms = '?scores=';
+            let win = 0;    //1=win, other=defeated
+            for (var i = 0; i < game.Players.length; i++) {
+                var p = game.Players[i];
+                parms += encodeURI(p.Name) + ',' + p.Color + ',' + p.State + '|';
+
+                if (p.Index == databus.selfIndex && p.State == 1) {
+                    win = 1;
+                }
+
+            }
+            parms += '&w=' + win;
+
+            location.replace('finish.html' + parms);
+        }
     }
 
     //更新到databus

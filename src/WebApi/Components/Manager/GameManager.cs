@@ -12,7 +12,7 @@ namespace WebApi.Components.Manager
 {
     public static class GameManager
     {
-        public static async Task<string> JoinOneGame(bool isMatch, string map, string name, int color, string openid)
+        public static async Task<(string gid, string pid, int pidx)> JoinOneGame(bool isMatch, string map, string name, int color, string openid)
         {
             var host = string.Empty;
             if (isMatch)
@@ -54,7 +54,7 @@ namespace WebApi.Components.Manager
 
                                 await DbEntityManager.Insert(score);
 
-                                return game.Id;
+                                return (gid: game.Id, pid: player.Id, pidx: player.Index);
                             }
                         }
                     }
@@ -65,7 +65,7 @@ namespace WebApi.Components.Manager
             }
         }
 
-        private static async Task<string> JoinNewGame(bool isMatch, string map, string name, int color, string openid)
+        private static async Task<(string gid, string pid, int pidx)> JoinNewGame(bool isMatch, string map, string name, int color, string openid)
         {
             var player = PlayerHelper.CreatePlayer(name, color);
             var args = new Dictionary<string, object>();
@@ -83,7 +83,7 @@ namespace WebApi.Components.Manager
 
             await DbEntityManager.Insert(score);
 
-            return gameid;
+            return (gid: gameid, pid: player.Id, pidx: player.Index);
         }
 
     }

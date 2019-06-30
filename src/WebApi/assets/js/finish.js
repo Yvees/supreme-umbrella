@@ -14,14 +14,14 @@ $(function() {
 
     $.showLoading();
 
-    if (queries["w"] == undefined || queries["scores"] == undefined) {
+    if (queries.w == undefined || queries.scores == undefined) {
         $.hideLoading();
         $.toast("查看失败", 'cancel');
         return;
     }
 
-    let win = queries["w"];
-    let scores = queries["scores"];
+    let win = queries.w;
+    let scores = queries.scores;
 
     if (win == 1) {
         $('#score-title').html("恭喜获胜");

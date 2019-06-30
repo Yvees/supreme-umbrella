@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MagCore.Sdk.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
-using MagCore.Sdk.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using SystemCommonLibrary.Json;
-using WebApi.Components.Extension;
 using WebApi.Components.Manager;
 using WebApi.Models;
 
@@ -57,11 +53,11 @@ namespace WebApi.Controllers
                     }
 
                     //join or creat a game
-                    string gid = await GameManager.JoinOneGame(
+                    var result = await GameManager.JoinOneGame(
                         userIntegral.mc_integral >= HelperConfig.Current.IntegralToJoin,
                         map, name, color, openid);
 
-                    return new ContentResult() { StatusCode = 200, Content = gid };
+                    return new ContentResult() { StatusCode = 200, Content = result.ToString() };
                 }
             }
         }
