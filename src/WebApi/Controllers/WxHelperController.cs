@@ -93,7 +93,7 @@ namespace WebApi.Controllers
                         HelperConfig.Current.WxInterfaceHost + "pages/creator.html"
                             + "?t=" + DateTime.Now.Ticks.ToString()
                             + "&oid=" + openid 
-                            + "&name=" + user.nickname 
+                            + $"&name={user.nickname}({HashManager.Md5(openid).Substring(12, 4)})"
                             + "&s=" + user.salt);
                     var reply = new WxArticleMsg(msg.FromUserName, msg.ToUserName, 
                         msg.CreateTime, new WxArticle[] { article });

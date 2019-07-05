@@ -1,10 +1,12 @@
 ﻿using MagCore.Sdk.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using SystemCommonLibrary.Json;
 using WebApi.Components.Manager;
+using WebApi.Exceptions;
 using WebApi.Models;
 
 namespace WebApi.Controllers
@@ -16,23 +18,27 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<ContentResult> New([FromBody]dynamic json)
         {
-            if (json == null
-                || json.oid == null || string.IsNullOrEmpty(json.oid)
-                || json.s == null || string.IsNullOrEmpty(json.s)
-                || json.color == null || string.IsNullOrEmpty(json.color.ToString())
-                || json.map == null || string.IsNullOrEmpty(json.map))
+            if (json == null)
+                return new ContentResult() { StatusCode = 404 };
+
+            string openid = json.oid.ToString();
+            string salt = json.s.ToString();
+            int color = Convert.ToInt32(json.color.ToString());
+            string map = json.map.ToString();
+
+            if (string.IsNullOrEmpty(openid)
+                || string.IsNullOrEmpty(salt)
+                || color < 0
+                || string.IsNullOrEmpty(map))
                 return new ContentResult() { StatusCode = 404 };
             else
             {
-                var user = await DbEntityManager.SelectOne<WxUser>("openid", json.oid);
-                if (user.salt != json.s)
+                var user = await DbEntityManager.SelectOne<WxUser>("openid", openid);
+                if (user.salt != salt)
                     return new ContentResult() { StatusCode = 401 };
                 else
                 {
-                    string openid = json.oid;
-                    string map = json.map;
-                    int color = json.color;
-                    string name = user.name;
+                    string name = user.nickname;
 
                     //init integral
                     UserIntegral userIntegral = null;
@@ -52,12 +58,19 @@ namespace WebApi.Controllers
                         await DbEntityManager.Insert(userIntegral);
                     }
 
-                    //join or creat a game
-                    var result = await GameManager.JoinOneGame(
-                        userIntegral.mc_integral >= HelperConfig.Current.IntegralToJoin,
-                        map, name, color, openid);
+                    try
+                    {
+                        //join or creat a game
+                        var result = await GameManager.JoinOneGame(
+                            userIntegral.mc_integral >= HelperConfig.Current.IntegralToJoin,
+                            map, name, color, openid);
 
-                    return new ContentResult() { StatusCode = 200, Content = result.ToString() };
+                        return new ContentResult() { StatusCode = 200, Content = result.ToString() };
+                    }
+                    catch (GameJoinedException)
+                    {
+                        return new ContentResult() { StatusCode = 400, Content = "请等待上局结束" };
+                    }
                 }
             }
         }

@@ -27,7 +27,10 @@ var OnError = function(rr) {
 
     $.hideLoading();
 
-    $.toast("创建失败", 'cancel');
+    if (rr.responseText != undefined && rr.responseText != "") 
+        $.toast(rr.responseText, 'cancel');
+    else
+        $.toast("创建失败", 'cancel');
 }
 
 var OnSubmit = function () {
@@ -51,7 +54,7 @@ var OnSubmit = function () {
         dataType: 'json',
         data: JSON.stringify({ "oid": oid, "s": s, "color":parseInt(color), "map":map}),
         success: function (data) {
-
+            console.log(data);
         },
         error: OnError
     });
