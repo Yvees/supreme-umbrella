@@ -1,3 +1,4 @@
+var queries = {};
 
 $(function() {
     FastClick.attach(document.body);
@@ -5,7 +6,7 @@ $(function() {
 
 $(function() {
     //获取查询字符串,读取gid
-    var queries = {};
+    queries = {};
     $.each(document.location.search.substr(1).split('&'),function(c,q){
         var i = q.split('=');
         queries[i[0]] = i[1];
@@ -122,7 +123,13 @@ var loadMap = function(game) {
 
 }
 
-var loadGame = function(gid) {
+var loadGame = function (gid) {
+    //
+    let contentGid = 'gid: ' + queries.gid;
+    $('#descGid').html(contentGid);
+    let contentPid = 'pid: ' + queries.pid;
+    $('#descPid').html(contentPid);
+
     $.ajax({
         url: databus.gameApi + gid,
         type: "GET",

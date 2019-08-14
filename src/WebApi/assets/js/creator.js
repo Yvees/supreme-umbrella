@@ -55,7 +55,16 @@ var OnSubmit = function () {
         dataType: 'json',
         data: JSON.stringify({ "oid": oid, "s": s, "color":parseInt(color), "map":map}),
         success: function (data) {
+            console.log('Success');
             console.log(data);
+
+            $.showLoading("等待开始");
+
+            let parms = "?gid=" + data.gid + "&pid=" + data.pid;
+            if (!data.match) {
+                parms += "&svr=test"
+            }
+            document.location.replace('monitor.html' + parms);
         },
         error: OnError
     });

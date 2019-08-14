@@ -61,11 +61,15 @@ namespace WebApi.Controllers
                     try
                     {
                         //join or creat a game
+                        bool isMatch = userIntegral.mc_integral >= HelperConfig.Current.IntegralToJoin;
+                        string match = isMatch ? "true" : "false";
                         var result = await GameManager.JoinOneGame(
-                            userIntegral.mc_integral >= HelperConfig.Current.IntegralToJoin,
-                            map, name, color, openid);
+                            isMatch, map, name, color, openid);
 
-                        return new ContentResult() { StatusCode = 200, Content = result.ToString() };
+                        return new ContentResult() {
+                            StatusCode = 200,
+                            Content = $"{{\"gid\":\"{result.gid}\",\"pid\":\"{result.pid}\",\"pidx\":{result.pidx},\"match\":{match}}}"
+                        };
                     }
                     catch (GameJoinedException)
                     {
