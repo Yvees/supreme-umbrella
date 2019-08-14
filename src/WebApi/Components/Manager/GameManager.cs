@@ -54,7 +54,8 @@ namespace WebApi.Components.Manager
                                     pid = player.Id,
                                     gid = game.Id,
                                     pidx = player.Index,
-                                    match = isMatch
+                                    ismatch = isMatch,
+                                    score = 0
                                 };
 
                                 await DbEntityManager.Insert(score);
@@ -86,7 +87,8 @@ namespace WebApi.Components.Manager
                 pid = player.Id,
                 gid = gameid,
                 pidx = player.Index,
-                match = isMatch
+                ismatch = isMatch,
+                score = 0
             };
 
             await DbEntityManager.Insert(score);

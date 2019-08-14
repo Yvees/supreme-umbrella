@@ -80,15 +80,7 @@ namespace WebApi.Components.Manager
                 object val = column.GetValue(entity);
                 if (!isKey)
                 {
-                    if (val is string)
-                    {
-                        lstVals.Add($"\"{val}\"");
-                    }
-                    else if (val is int || val is long || val is float || val is double || val is decimal)
-                    {
-                        lstVals.Add($"{val}");
-                    }
-
+                    lstVals.Add(FormatValue(val));
                     lstCols.Add(column.Name);
                 }
             }
@@ -169,6 +161,10 @@ namespace WebApi.Components.Manager
                 return $"\"{val}\"";
             else if (val is int || val is long || val is float || val is double || val is decimal)
                 return $"{val}";
+            else if (val is bool)
+            {
+                return $"{val.ToString().ToLower()}";
+            }
             else
                 throw new NotSupportedException("Value Type Not Supported.");
         }

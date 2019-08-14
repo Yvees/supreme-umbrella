@@ -27,10 +27,11 @@ var OnError = function(rr) {
 
     $.hideLoading();
 
-    if (rr.responseText != undefined && rr.responseText != "") 
-        $.toast(rr.responseText, 'cancel');
-    else
-        $.toast("创建失败", 'cancel');
+    if (rr.responseText != undefined && rr.responseText != "") {
+        console.log(rr.responseText);
+    }
+
+    $.toast("创建失败", 'cancel');
 }
 
 var OnSubmit = function () {

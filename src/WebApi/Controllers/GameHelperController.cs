@@ -38,7 +38,7 @@ namespace WebApi.Controllers
                     return new ContentResult() { StatusCode = 401 };
                 else
                 {
-                    string name = user.nickname;
+                    string name = $"{user.nickname}({HashManager.Md5(openid).Substring(12, 4)})";
 
                     //init integral
                     UserIntegral userIntegral = null;

@@ -21,6 +21,6 @@ namespace WebApi.Models
 
         public int pidx { get; set; }
 
-        public bool match { get; set; }
+        public bool ismatch { get; set; }
     }
 }
