@@ -92,9 +92,9 @@ namespace WebApi.Controllers
                         HelperConfig.Current.WxInterfaceHost + "assets/images/icon.png",
                         HelperConfig.Current.WxInterfaceHost + "pages/creator.html"
                             + "?t=" + DateTime.Now.Ticks.ToString()
-                            + "&oid=" + openid 
-                            + $"&name={user.nickname}({HashManager.Md5(openid).Substring(12, 4)})"
-                            + "&s=" + user.salt);
+                            + "&amp;oid=" + openid 
+                            + $"&amp;name={user.nickname}({HashManager.Md5(openid).Substring(12, 4)})"
+                            + "&amp;s=" + user.salt);
                     var reply = new WxArticleMsg(msg.FromUserName, msg.ToUserName, 
                         msg.CreateTime, new WxArticle[] { article });
                     string text = reply.ToXml();
