@@ -1,0 +1,39 @@
+﻿{
+  "button": [
+    {
+      "name": "福利",
+      "sub_button": [
+        {
+          "type": "view",
+          "url": "http://mp.weixin.qq.com/mp/homepage?__biz=Mzg4ODE1MjU4Ng==&hid=2&sn=d61469cec4f83e7704ed758c6f52819e&scene=18#wechat_redirect",
+          "name": "精选"
+        },
+        {
+          "type": "view",
+          "url": "https://mp.weixin.qq.com/s/MFhWivCMUPrL6IKH2iwnZg",
+          "name": "兼职派单"
+        }
+      ]
+    },
+    {
+      "name": "大航海",
+      "type": "view_limited",
+      "media_id": "CdV-GUqUsSATHmyKcMlaeosn1uGfY0xE7Bzp3bOQ-S8"
+    },
+    {
+      "name": "联系我",
+      "sub_button": [
+        {
+          "type": "view_limited",
+          "media_id": "CdV-GUqUsSATHmyKcMlaetPznFG-kcYsNn0cWLJipGo",
+          "name": "转载"
+        },
+        {
+          "type": "media_id",
+          "media_id": "CdV-GUqUsSATHmyKcMlaepsAuNv8LqDWab9cgYcO0J4",
+          "name": "人人都是Pythonis"
+        }
+      ]
+    }
+  ]
+}
