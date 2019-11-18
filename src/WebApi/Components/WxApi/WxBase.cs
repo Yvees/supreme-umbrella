@@ -114,7 +114,7 @@ namespace WebApi.Components.WxApi
             {
                 var client = new HttpClient() { BaseAddress = new Uri(BaseUrl) };
                 var response = await client.PostAsync(string.Format(_menuUrl, await GetAccessToken()), 
-                                                        new StringContent(HelperConfig.Current.WxMenu));
+                                                        new StringContent(WxMenu.Current));
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     GlobalVarsManager.IsWxMenuInited = true;

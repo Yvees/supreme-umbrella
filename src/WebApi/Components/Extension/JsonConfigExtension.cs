@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,15 +10,16 @@ using WebApi.Models;
 
 namespace WebApi.Components.Extension
 {
-    public static class HelperConfigExtension
+    public static class JsonConfigExtension
     {
-        public static void AddHelperConfig(this IServiceCollection services, IConfiguration configuration)
+        public static void AddJsonConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<HelperConfig>(configuration.GetSection("HelperConfig"));
             var provider = services.BuildServiceProvider();
             var settings = provider.GetRequiredService<IOptions<HelperConfig>>();
 
             HelperConfig.Current = settings.Value;
+            WxMenu.Current = File.ReadAllText("wxmenu.json");
         }
     }
 }

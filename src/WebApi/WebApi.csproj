@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Extension\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="assets\css\finish.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
